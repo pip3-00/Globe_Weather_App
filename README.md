@@ -40,16 +40,10 @@ El sistema mostrará automáticamente el clima de esa ubicación.
 1. Clona este repositorio:
 
 ```bash
-git clone https://github.com/tu-usuario/globe-weather-app.git
+git clone https://github.com/pip3-00/Globe_Weather_App
 ```
 
-2. Abre el proyecto:
-
-```bash
-cd globe-weather-app
-```
-
-3. Abre `index.html` en tu navegador
+2. Abre `index.html` en tu navegador
    (o usa Live Server en VS Code)
 
 ---
