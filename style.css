@@ -1,8 +1,44 @@
+
 body {
   margin: 0;
-  background: black;
-  font-family: system-ui, -apple-system, sans-serif;
+  --bg-primary: radial-gradient(circle at 20% 80%, #0f0f23 0%, #1a0033 50%, #000 100%);
+  background: var(--bg-primary);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  font-family: 'Roboto', sans-serif;
   overflow: hidden;
+  position: relative;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Stars particles */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+    radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+    radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 130px 80px, #ddd, transparent),
+    radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: starsTwinkle 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes starsTwinkle {
+  from { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+  to { transform: translateY(-100px) rotate(360deg); opacity: 0.4; }
 }
 
 #globe {
@@ -18,7 +54,9 @@ body {
 
 #globe polygon:hover {
   cursor: pointer !important;
-  stroke-width: 2px !important;
+  stroke-width: 3px !important;
+  stroke: #00bfff !important;
+  filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.8)) !important;
 }
 
 /* Panel responsive */
@@ -31,21 +69,65 @@ body {
   max-height: 80vh;
   overflow-y: auto;
   padding: 20px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(0, 123, 255, 0.2);
   color: white;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  box-shadow: 
+    0 25px 45px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    0 0 20px rgba(0, 123, 255, 0.1);
   z-index: 10;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.panel:hover {
+  transform: translateY(-8px);
+  box-shadow: 
+    0 35px 60px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 0 30px rgba(0, 123, 255, 0.4);
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 35px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 30px rgba(0, 123, 255, 0.4); }
+  50% { box-shadow: 0 35px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 40px rgba(0, 123, 255, 0.6); }
+}
 select, button {
-  border-radius: 10px !important;
+  border-radius: 12px !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-h1, h2, h5, p {
-  margin: 0;
+button {
+  background: linear-gradient(135deg, #0d6efd 0%, #007bff 50%, #0056b3 100%);
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4), 0 0 20px rgba(13, 110, 253, 0.2);
+  font-family: 'Orbitron', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #007bff 0%, #0d6efd 50%, #0056b3 100%);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6), 0 0 30px rgba(13, 110, 253, 0.4);
+}
+}
+
+h1, h2, h5 {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  text-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+p {
+  font-family: 'Roboto', sans-serif;
+  margin: 0 0 4px 0;
 }
 
 /* Mobile responsive */
@@ -75,17 +157,86 @@ h1, h2, h5, p {
 
 /* Globe polygon hover styles */
 #globe .polygon-hover {
-  fill: rgba(255, 215, 0, 0.8) !important;
+  fill: rgba(0, 191, 255, 0.6) !important;
+  filter: brightness(1.5) !important;
 }
 
 /* Weather result styling */
 #result {
-  background: rgba(0,0,0,0.2);
-  padding: 15px;
-  border-radius: 15px;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 20px;
   text-align: center;
   font-size: 1.1em;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
+#result.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#result img {
+  width: 80px;
+  height: 80px;
+  animation: iconBounce 1s ease infinite;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+#result h1 {
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+/* Spinner */
+#spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#spinner:not(.hidden) {
+  opacity: 1;
+}
+
+.spinner-inner {
+  width: 100%;
+  height: 100%;
+  border: 4px solid rgba(0, 191, 255, 0.2);
+  border-top: 4px solid #00bfff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#spinner.hidden {
+  display: none;
+}
+
+/* Temp colors */
+#result.cold h1 { color: #00bfff; }
+#result.warm h1 { color: #ff9500; }
+#result.hot h1 { color: #ff3b30; }
 
 #result img {
   width: 80px;
@@ -94,10 +245,23 @@ h1, h2, h5, p {
 
 /* Input search styling */
 #citySearch {
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(255,255,255,0.3);
+  background: linear-gradient(135deg, rgba(13,110,253,0.2) 0%, rgba(0,123,255,0.3) 100%);
+  border: 2px solid rgba(0,123,255,0.4);
   color: white;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: 'Roboto', sans-serif;
+}
+
+#citySearch::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+#citySearch:focus {
+  border-color: #00bfff;
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.6), inset 0 0 10px rgba(0, 191, 255, 0.2);
+  transform: scale(1.02);
+  outline: none;
 }
 
 #citySearch::placeholder {

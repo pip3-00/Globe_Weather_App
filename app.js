@@ -37,6 +37,7 @@ world.onGlobeClick(async ({ lat, lng }) => {
 
   // 🌦️ Obtener clima
   try {
+    document.getElementById('spinner').classList.remove('hidden');
     document.getElementById("result").innerHTML = "Cargando clima...";
 
     const res = await fetch(
@@ -46,16 +47,28 @@ world.onGlobeClick(async ({ lat, lng }) => {
     if (!res.ok) throw new Error("Error API");
 
     const data = await res.json();
+    const temp = Math.round(data.main.temp);
+    const tempClass = temp < 10 ? 'cold' : temp < 20 ? 'warm' : 'hot';
 
     document.getElementById("result").innerHTML = `
       <h2>${data.name || "Ubicación"}</h2>
       <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png">
-      <h1>${Math.round(data.main.temp)}°C</h1>
+      <h1>${temp}°C</h1>
       <p>${data.weather[0].description}</p>
       <small>Lat: ${lat.toFixed(2)} | Lon: ${lng.toFixed(2)}</small>
     `;
+    document.getElementById("result").className = `mt-3 ${tempClass}`;
+    document.getElementById("result").classList.add('show');
+
+    document.getElementById('spinner').classList.add('hidden');
+
+    world.pointsData([{ lat, lng }])
+      .pointAltitude(0.03)
+      .pointColor(() => '#00bfff')
+      .pointRadius(0.8);
 
   } catch (err) {
+    document.getElementById('spinner').classList.add('hidden');
     document.getElementById("result").innerHTML = "❌ Error al obtener clima";
   }
 });
@@ -79,12 +92,16 @@ async function getWeather() {
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
 
   try {
+    document.getElementById('spinner').classList.remove('hidden');
     document.getElementById("result").innerHTML = "Cargando clima...";
 
     const response = await fetch(url);
     if (!response.ok) throw new Error("Ciudad no encontrada");
 
     const data = await response.json();
+
+    const temp = Math.round(data.main.temp);
+    const tempClass = temp < 10 ? 'cold' : temp < 20 ? 'warm' : 'hot';
 
     // 🎥 Zoom
     world.pointOfView({
@@ -97,21 +114,26 @@ async function getWeather() {
     world.pointsData([]);
     world.pointsData([{ lat: data.coord.lat, lng: data.coord.lon }])
       .pointAltitude(0.03)
-      .pointColor(() => 'red')
-      .pointRadius(0.6);
+      .pointColor(() => '#00bfff')
+      .pointRadius(0.8);
 
     document.getElementById("result").innerHTML = `
       <h2>${data.name}, ${data.sys.country}</h2>
       <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png">
-      <h1>${Math.round(data.main.temp)}°C</h1>
+      <h1>${temp}°C</h1>
       <p>${data.weather[0].description}</p>
     `;
+    document.getElementById("result").className = `mt-3 ${tempClass}`;
+    document.getElementById("result").classList.add('show');
+
+    document.getElementById('spinner').classList.add('hidden');
 
     // limpiar solo si existen
     if (searchInput) searchInput.value = "";
     if (selectInput) selectInput.value = "";
 
   } catch (error) {
+    document.getElementById('spinner').classList.add('hidden');
     document.getElementById("result").innerHTML = "❌ " + error.message;
   }
 }
